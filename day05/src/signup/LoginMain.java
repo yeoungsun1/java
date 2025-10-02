@@ -52,7 +52,7 @@ public class LoginMain {
 		users.add(user1);
 		System.out.println(users);
 		users.add(user2);
-		System.out.println(users);
+		System.out.println(users.toString());
 
 		// for-each문
 		for (User u : users) {
@@ -63,14 +63,54 @@ public class LoginMain {
 		String inputId = sc.nextLine();
 		System.out.println("비밀번호 입력 : ");
 		String inputPw = sc.nextLine();
-		System.out.println(user1.id.equals(inputId) && user1.pw.equals(inputPw));
-		if (user1.id.equals(inputId) && user1.pw.equals(inputPw)) {
-			System.out.println("로그인 성공!!");
-			System.out.println(user1.name + "님 환영합니다!");
-		} else {
-			System.out.println("로그인 실패!!");
-			System.out.println("아이디나 비밀번호를 확인하세요.");
+//		System.out.println(user1.id.equals(inputId) && user1.pw.equals(inputPw));
+//		if (user1.id.equals(inputId) && user1.pw.equals(inputPw)) {
+//			System.out.println("로그인 성공!!");
+//			System.out.println(user1.name + "님 환영합니다!");
+//		} else {
+//			System.out.println("로그인 실패!!");
+//			System.out.println("아이디나 비밀번호를 확인하세요.");
+//		}
+		
+		//ArrayList로 로그인 검사
+		//로그인 검사
+		boolean isLogin = false;
+		
+		//for-each문
+		for(User u : users) {
+//			System.out.println(u.id);
+//			System.out.println(u.pw);
+//			System.out.println("아이디 : " + u.id.equals(inputId));
+//			System.out.println("비밀번호 : " + u.pw.equals(inputPw));
+			
+//			System.out.println(u.id.equals(inputId) && u.pw.equals(inputPw));
+			
+			//조건문 if문
+			if(u.id.equals(inputId) && u.pw.equals(inputPw)) {
+				System.out.println(u.name + "님 환영합니다!");
+				isLogin = true;
+				break; //기타제어문 break문을 만나면 무조건 반복문 즉시 탈출
+				//로그인을 성공했다면 더이상 다른 것을 확인할 필요가 없음
+			}
+			
 		}
+	
+		//로그인 실패를 출력할 조건문
+		if(!isLogin) {
+			System.out.println("로그인 실패! 아이디나 비밀번호를 확인해주세요!");
+		}
+		
 
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
