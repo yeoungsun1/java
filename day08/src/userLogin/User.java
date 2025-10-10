@@ -9,6 +9,7 @@ public class User {
 	String pw;
 
 	//생성자 (단축키 : alt + shift + s + o)
+	//생성자 오버로딩
 	//기본생성자
 	public User() {
 		super();
@@ -37,5 +38,7 @@ public class User {
 	public String toString() {
 		return "User [name=" + name + ", age=" + age + ", id=" + id + ", pw=" + pw + "]";
 	}
+	// 모든 클래스의 최상위 부모 클래스 : Object 클래스
+	// toString 메소드도 Object 클래스안에 포함되어있으므로 오버라이딩이 가능함
 	
 }
