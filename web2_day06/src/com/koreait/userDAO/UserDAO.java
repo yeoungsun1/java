@@ -189,5 +189,168 @@ public class UserDAO {
 		// 조회된 결과가 없으면 false 반환 => 중복 아님(사용가능한 아이디)
 		return false;
 	} // checkId() 메소드 중괄호 끝 영역
-
+	/* ----------------------------------day07 수업 이어서 진행----------------------------------------- */
+	//4. 로그인 메소드
+	public String login(String userId, String userPw) {
+		//1) 실행할 SQL 쿼리 작성
+		//입력받은 ID와 PW가 일치하는 사용자의 USER_NAME을 조회
+		String query = "SELECT USER_NAME FROM TBL_USER WHERE USER_ID = ? AND USER_PW = ?";
+		
+		//2) 로그인 성공 시 반환할 사용자 이름을 담을 변수 선언
+		String name = null;
+		
+		try {
+			//3) DB 연결 객체 생성
+			connection = DBConnector.getConnection();
+			
+			//4) SQL 실행 준비(쿼리문 미리 컴파일)
+			preparedStatement = connection.prepareStatement(query);
+			
+			//5) ? 바인딩(순서대로 userId, userPw)
+			preparedStatement.setString(1, userId);
+			preparedStatement.setString(2, userPw);
+			
+			//6) SQL문 실행(SELECT문이므로 executeQuery() 사용 - 담아줄 변수 ResultSet 타입의 객체로 만든다)
+			resultSet = preparedStatement.executeQuery();
+			
+//			//7) 결과 처리
+//			//resultSet.next()가 true라면 로그인 정보가 일치하는 사용자 존재 => 로그인 성공
+//			//false라면 로그인 정보가 일치하는 사용자 미존재 => 로그인 실패
+			if(resultSet.next()) {
+//				//USER_NAME 컬럼값을 name변수에 저장
+				name = resultSet.getString("USER_NAME");
+//				System.out.println("로그인 성공!! " + name + "님 환영합니다!");
+			}
+//			else {
+//				System.out.println("로그인 실패! 아이디 또는 비밀번호가 일치하지 않습니다");
+//			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			//8) SQL 실행 중 오류 발생시 예외처리
+			System.out.println("login() 로그인 메소드 SQL 오류!!");
+			e.printStackTrace();
+		} finally {
+			//9) 사용한 자원 해제(연결 종료)
+			//resultSet -> preparedStatement -> connection 순서로 진행
+			try {
+				if(resultSet != null) {
+					resultSet.close();
+				}
+				if(preparedStatement != null) {
+					preparedStatement.close();
+				}
+				if(connection != null) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("login() 연결 종료 오류!!");
+				e.printStackTrace();
+			}
+			
+		}
+		
+		//10) 최종적으로 name 반환
+		//로그인 성공시 사용자 이름, 실패시 null 반환
+		return name;
+		
+	} //login 메소드 중괄호 끝 영역
+	
+	//5. 비밀번호 변경 메소드
+	public boolean changePw(String userId, String userPw, String newPw) {
+		//1) 업데이트 쿼리문 작성(DML)
+		String query = "UPDATE tbl_user SET USER_PW = ? WHERE USER_ID = ? AND USER_PW = ?";
+		try {
+			//2) DB 연결 객체 가져오기
+			connection = DBConnector.getConnection();
+			//3) SQL 구문 준비
+			preparedStatement = connection.prepareStatement(query);
+			//4) 물음표 완성 코드 작성(? 바인딩)
+			preparedStatement.setString(1, newPw);
+			preparedStatement.setString(2, userId);
+			preparedStatement.setString(3, userPw);
+			//5) 정수형 변수 결과 저장(몇 행이 영향을 받았는지가 나옴-executeUpdate())
+			int result = preparedStatement.executeUpdate();
+			//6) 반환값 
+			return result > 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			//7) SQLException 발생시 출력 메시지
+			System.out.println("changePw() 메소드 SQL 오류!!");
+			e.printStackTrace();
+		} finally {
+			//8) 연결 해제
+			try {
+				if(preparedStatement != null) {
+					preparedStatement.close();
+				}
+				
+				if(connection != null) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("changePw() 연결 종료 오류!!");
+				e.printStackTrace();
+			}
+		}
+		return false;
+	} // changePw() 메소드 중괄호 끝 영역
+	
+	//6. 회원탈퇴 메소드
+	public boolean deleteUser(int userNumber) {
+		//1) 실행할 SQL문 쿼리 작성
+		String query = "DELETE FROM TBL_USER WHERE USER_NUMBER = ?";
+		
+		try {
+			//2) DB 연결객체 생성
+			connection = DBConnector.getConnection();
+			
+			//3) SQL 실행 준비
+			preparedStatement = connection.prepareStatement(query);
+			
+			//4) ? 바인딩
+			//USER_NUMBER의 값을 채워야하므로 매개변수로 받은 userNumber를 첫번째 ?에 세팅
+			preparedStatement.setInt(1, userNumber);
+			
+			//5) SQL 실행
+			int result = preparedStatement.executeUpdate();
+			System.out.println("=====삭제된 행 수 : " + result + "======");
+			//6) result > 0 true라면 성공적으로 데이터가 삭제(회원탈퇴 완료)
+			return result > 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("deleteUser() SQL 오류!!");
+			e.printStackTrace();
+		} finally {
+			try {
+				if(preparedStatement != null) {
+					preparedStatement.close();
+				}
+				if(connection != null) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}	
+		return false;
+	} // deleteUser 메소드 중괄호 끝 영역
+	
 }// 클래스 중괄호 끝 영역
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
