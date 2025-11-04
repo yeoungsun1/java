@@ -120,3 +120,26 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,eclipse,java
+
+### JDBC ###
+# JDBC 관련 설정 파일
+jdbc.properties
+db.properties
+database.properties
+datasource.properties
+
+# JDBC 드라이버 JAR 파일
+ojdbc*.jar
+mysql-connector-*.jar
+postgresql-*.jar
+mariadb-connector-*.jar
+sqljdbc*.jar
+h2*.jar
+derby*.jar
+sqlite*.jar
+
+# 로컬 테스트용 데이터베이스 파일
+*.mv.db
+*.trace.db
+*.h2.db
+*.db
